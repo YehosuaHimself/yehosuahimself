@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { usePageContext } from '../../context/PageContext';
 import SectionHeader from '../../components/shared/SectionHeader';
 import RevealOnScroll from '../../components/shared/RevealOnScroll';
@@ -7,156 +7,193 @@ import './Home.css';
 const Home = ({ containerRef }) => {
   const { goPage } = usePageContext();
   const canvasRef = useRef(null);
+  const galleryScrollRef = useRef(null);
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
-  // Canvas wave animation for sound section
+  // âââ Canvas wave animation âââââââââââââââââââââââââââââââ
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
-    let animationId;
-    let time = 0;
+    let animId;
+    let t = 0;
 
-    const resizeCanvas = () => {
-      canvas.width = canvas.offsetWidth;
+    const resize = () => {
+      canvas.width  = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
     };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    resize();
+    window.addEventListener('resize', resize);
 
-    const drawWave = () => {
-      time += 0.02;
+    const draw = () => {
+      t += 0.018;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = 'rgba(160, 104, 32, 0.3)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
 
+      // Wave 1
+      ctx.strokeStyle = 'rgba(160, 104, 32, 0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
       for (let x = 0; x < canvas.width; x += 2) {
-        const y =
-          canvas.height / 2 +
-          Math.sin((x * 0.01 + time) / 3) * 40 +
-          Math.cos((x * 0.005 - time * 0.5) / 2) * 30;
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        const y = canvas.height / 2
+          + Math.sin((x * 0.012 + t)) * 35
+          + Math.cos((x * 0.006 - t * 0.7)) * 20;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.stroke();
-      animationId = requestAnimationFrame(drawWave);
+
+      // Wave 2 (subtler)
+      ctx.strokeStyle = 'rgba(160, 104, 32, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x < canvas.width; x += 2) {
+        const y = canvas.height / 2
+          + Math.sin((x * 0.008 - t * 1.2)) * 25
+          + Math.cos((x * 0.015 + t * 0.4)) * 15;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      animId = requestAnimationFrame(draw);
     };
-    drawWave();
+    draw();
 
     return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
     };
   }, []);
 
-  // Event data
-  const events = [
-    {
-      day: '04', month: 'APR 2026', name: 'Voltage Underground',
-      venue: 'Tresor Keller, Berlin', city: 'Berlin, DE', genre: 'Techno',
-    },
-    {
-      day: '09', month: 'APR 2026', name: 'Parallax — Open Rave',
-      venue: 'Chlor Club, Vienna', city: 'Vienna, AT', genre: 'Psytrance',
-    },
-    {
-      day: '12', month: 'APR 2026', name: 'Signal Path Festival',
-      venue: 'Patronaat, Haarlem', city: 'Haarlem, NL', genre: 'Techno · Psytrance',
-    },
-    {
-      day: '17', month: 'APR 2026', name: 'Depth Ritual II',
-      venue: 'Shelter, Amsterdam', city: 'Amsterdam, NL', genre: 'Dark Techno',
-    },
-    {
-      day: '19', month: 'APR 2026', name: 'Resonance Kollektiv',
-      venue: 'OT301, Amsterdam', city: 'Amsterdam, NL', genre: 'Industrial',
-    },
-    {
-      day: '24', month: 'APR 2026', name: 'Meridian Spring Rave',
-      venue: 'Paradiso, Amsterdam', city: 'Amsterdam, NL', genre: 'Techno · Acid',
-    },
-    {
-      day: '30', month: 'APR 2026', name: 'Convergence Festival',
-      venue: 'Gashouder, Amsterdam', city: 'Amsterdam, NL', genre: 'Techno · Ambient',
-    },
-    {
-      day: '05', month: 'MAY 2026', name: 'Echoes Madrid',
-      venue: 'Fabrik, Madrid', city: 'Madrid, ES', genre: 'Psytrance · Techno',
-    },
-  ];
+  // âââ Smooth scroll to section (uses the fixed container) ââ
+  const scrollToSection = useCallback((e, sectionId) => {
+    e.preventDefault();
+    const container = containerRef?.current;
+    const target = document.getElementById(sectionId);
+    if (container && target) {
+      const offset = target.getBoundingClientRect().top + container.scrollTop - 64; // 64 = nav height
+      container.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+  }, [containerRef]);
 
-  // Gallery items
+  // âââ Gallery navigation âââââââââââââââââââââââââââââââââââ
   const galleryItems = [
-    { id: 1, location: 'Alps', image: '/images/image-1.webp' },
-    { id: 2, location: 'Munich', image: '/images/image-4.webp' },
-    { id: 3, location: 'Algarve', image: '/images/image-7.webp' },
-    { id: 4, location: 'Vienna', image: '/images/image-8.webp' },
-    { id: 5, location: 'Madrid', image: '/images/image-9.webp' },
+    { id: 1, location: 'Alps',      image: '/images/image-1.webp' },
+    { id: 2, location: 'Munich',    image: '/images/image-4.webp' },
+    { id: 3, location: 'Algarve',   image: '/images/image-7.webp' },
+    { id: 4, location: 'Vienna',    image: '/images/image-8.webp' },
+    { id: 5, location: 'Madrid',    image: '/images/image-9.webp' },
     { id: 6, location: 'Barcelona', image: '/images/image-10.webp' },
   ];
 
-  // Journey archive cards
-  const journeyArchive = [
-    { title: 'Performance', subtitle: 'Kingdom Festival · Alps', image: '/images/image-1.webp' },
-    { title: 'Desert Walk', subtitle: 'Tarifa · Southern Reach', image: '/images/image-7.webp' },
-    { title: 'Kingdom Festival', subtitle: 'Alpine Main Stage', image: '/images/image-4.webp' },
-    { title: 'Studio', subtitle: 'Amsterdam · Current Base', image: '/images/image-8.webp' },
+  const scrollGallery = useCallback((dir) => {
+    const el = galleryScrollRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector('.hm-gallery-card')?.offsetWidth || 300;
+    el.scrollBy({ left: dir * (cardWidth + 24), behavior: 'smooth' });
+  }, []);
+
+  // âââ Event data âââââââââââââââââââââââââââââââââââââââââââââââââ
+  const events = [
+    { day: '04', month: 'APR 2026', name: 'Voltage Underground',   venue: 'Tresor Keller, Berlin',    city: 'Berlin, DE',     genre: 'Techno'            },
+    { day: '09', month: 'APR 2026', name: 'Parallax â Open Rave',  venue: 'Chlor Club, Vienna',       city: 'Vienna, AT',     genre: 'Psytrance'         },
+    { day: '12', month: 'APR 2026', name: 'Signal Path Festival',  venue: 'Patronaat, Haarlem',       city: 'Haarlem, NL',    genre: 'Techno Â· Psytrance'},
+    { day: '17', month: 'APR 2026', name: 'Depth Ritual II',       venue: 'Shelter, Amsterdam',       city: 'Amsterdam, NL',  genre: 'Dark Techno'       },
+    { day: '19', month: 'APR 2026', name: 'Resonance Kollektiv',   venue: 'OT301, Amsterdam',         city: 'Amsterdam, NL',  genre: 'Industrial'        },
+    { day: '24', month: 'APR 2026', name: 'Meridian Spring Rave',  venue: 'Paradiso, Amsterdam',      city: 'Amsterdam, NL',  genre: 'Techno Â· Acid'     },
+    { day: '30', month: 'APR 2026', name: 'Convergence Festival',  venue: 'Gashouder, Amsterdam',     city: 'Amsterdam, NL',  genre: 'Techno Â· Ambient'  },
+    { day: '05', month: 'MAY 2026', name: 'Echoes Madrid',         venue: 'Fabrik, Madrid',           city: 'Madrid, ES',     genre: 'Psytrance Â· Techno'},
   ];
 
-  // Fans Of artists
-  const fansOf = ['Lisa Kaufmann', 'Charlotte de Witte', 'Christian Craken', 'Mekkanikka'];
+  // âââ Form state ââââââââââââââââââââââââââââââââââââââââââââââââââ
+  const [formState, setFormState] = useState({ submitting: false, succeeded: false, error: null });
+  const [formData, setFormData] = useState({ name: '', email: '', festival_venue: '', location: '', event_date: '', genre_focus: '', message: '' });
 
-  const scrollToSection = (e, sectionId) => {
+  const handleFormChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    setFormState({ submitting: true, succeeded: false, error: null });
+    try {
+      const res = await fetch('https://formspree.io/f/xblgyznq', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setFormState({ submitting: false, succeeded: true, error: null });
+        setFormData({ name: '', email: '', festival_venue: '', location: '', event_date: '', genre_focus: '', message: '' });
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch {
+      setFormState({ submitting: false, succeeded: false, error: 'Submission failed. Please email booking@yehosua.com directly.' });
     }
   };
 
   return (
     <div id="pg-home">
-      {/* ========== HERO SECTION ========== */}
-      <section className="hm-hero" id="hmHero">
-        <div
-          className="hm-hero-bg"
-          style={{ backgroundImage: `url('/images/hero-home-bg.webp')` }}
-        >
+
+      {/* ââ©âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+          HERO
+      h {
+      setFormState({ submitting: false, succeeded: false, error: 'Submission failed. Please email booking@yehosua.com directly.' });
+    }
+  };
+
+  return (
+    <div id="pg-home">
+
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          HERO
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-hero" id="hmHero" aria-label="Hero">
+        <div className="hm-hero-bg" aria-hidden="true">
           <img
             src="/images/hero-home-bg.webp"
-            alt="YEHOSUA HIMSELF"
+            alt=""
             className="hm-hero-img"
+            fetchpriority="high"
           />
         </div>
-        <div className="hm-hero-vignette" />
-        <div className="hm-hero-scan" />
+        <div className="hm-hero-vignette" aria-hidden="true" />
+        <div className="hm-hero-scan"     aria-hidden="true" />
 
         <div className="hm-hero-inner">
-          <div className="hm-eyebrow">Sound of God Recordings · 2026 Season</div>
+          <div className="hm-eyebrow">Sound of God Recordings Â· 2026 Season</div>
+
           <h1 className="hm-hero-name">
             YEHOSUA<br />
             <em>HIMSELF</em>
           </h1>
-          <div className="hm-hero-roles">
-            <span className="hm-hero-role">DJ</span>
-            <span className="hm-hero-sep" />
-            <span className="hm-hero-role">Producer</span>
-            <span className="hm-hero-sep" />
-            <span className="hm-hero-role">Sonic Wanderer</span>
+
+          <div className="hm-hero-roles" role="list">
+            <span className="hm-hero-role" role="listitem">DJ</span>
+            <span className="hm-hero-sep" aria-hidden="true" />
+            <span className="hm-hero-role" role="listitem">Producer</span>
+            <span className="hm-hero-sep" aria-hidden="true" />
+            <span className="hm-hero-role" role="listitem">Sonic Wanderer</span>
           </div>
 
           <div className="hm-hero-ctas">
-            <a href="#hm-upcoming" className="hm-cta-btn" onClick={(e) => scrollToSection(e, 'hm-upcoming')}>
+            <a
+              href="#hm-upcoming"
+              className="hm-cta-btn"
+              onClick={(e) => scrollToSection(e, 'hm-upcoming')}
+            >
               Upcoming Dates
             </a>
-            <a href="#hm-contact" className="hm-cta-btn hm-cta-secondary" onClick={(e) => scrollToSection(e, 'hm-contact')}>
+            <a
+              href="#hm-contact"
+              className="hm-cta-btn hm-cta-secondary"
+              onClick={(e) => scrollToSection(e, 'hm-contact')}
+            >
               Book / Inquire
             </a>
           </div>
         </div>
 
-        <div className="hm-hero-scroll">
+        <div className="hm-hero-scroll" aria-hidden="true">
           <div className="hm-scroll-line" />
           <div className="hm-scroll-txt">Scroll</div>
         </div>
@@ -164,65 +201,43 @@ const Home = ({ containerRef }) => {
 
       <hr className="hm-div" />
 
-      {/* ========== MARQUEE BAND ========== */}
-      <div className="hm-marquee">
+      {/* âââ MARQUEE âââââââââââââââââââââââââââââââââââââââ */}
+      <div className="hm-marquee" aria-hidden="true">
         <div className="hm-marquee-inner">
-          <span>TECHNO</span><span>·</span>
-          <span>PSYTRANCE</span><span>·</span>
-          <span>SONIC WANDERER</span><span>·</span>
-          <span>DJING ACROSS EUROPE</span><span>·</span>
-          <span>SOUND OF GOD RECORDINGS</span><span>·</span>
-          <span>TECHNO</span><span>·</span>
-          <span>PSYTRANCE</span><span>·</span>
-          <span>SONIC WANDERER</span><span>·</span>
-          <span>DJING ACROSS EUROPE</span><span>·</span>
-          <span>SOUND OF GOD RECORDINGS</span><span>·</span>
+          {/* Duplicated for seamless infinite loop */}
+          {['TECHNO', 'Â·', 'PSYTRANCE', 'Â·', 'SONIC WANDERER', 'Â·', 'DJING ACROSS EUROPE', 'Â·', 'SOUND OF GOD RECORDINGS', 'Â·',
+            'TECHNO', 'Â·', 'PSYTRANCE', 'Â·', 'SONIC WANDERER', 'Â·', 'DJING ACROSS EUROPE', 'Â·', 'SOUND OF GOD RECORDINGS', 'Â·',
+          ].map((t, i) => <span key={i}>{t}</span>)}
         </div>
       </div>
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 01: THE SOUND ========== */}
-      <section className="hm-s hm-sound" id="hm-sound">
-        <SectionHeader number="01" label="Selected Tracks" title="THE <em>SOUND</em>" />
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          01 â THE SOUND
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-sound" id="hm-sound" aria-label="The Sound">
+        <SectionHeader number="01" label="The Sonic Universe" title="THE SOUND" />
 
         <div className="hm-sound-content">
           <RevealOnScroll>
-            <p className="hm-sound-intro">
-              Each track is a waypoint in a larger pilgrimage. Recorded across rooftops in Tarifa,
-              bunkers in Berlin, and alpine studios above the clouds — these sets capture
-              the convergence of techno precision and psytrance transcendence.
-            </p>
-          </RevealOnScroll>
-
-          {/* SoundCloud iframes with labels */}
-          <RevealOnScroll>
             <div className="hm-sound-players">
               <div className="hm-sc-player">
-                <div className="hm-sc-label">01 · FEATURED</div>
                 <iframe
-                  title="YEHOSUA HIMSELF — Peak at Kingdom Festival"
+                  title="YEHOSUA HIMSELF â Peak at Kingdom Festival"
                   loading="lazy"
-                  width="100%"
-                  height="166"
-                  scrolling="no"
-                  frameBorder="no"
-                  allow="autoplay"
+                  width="100%" height="166"
+                  scrolling="no" frameBorder="no" allow="autoplay"
                   src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2289842570&color=%23a06820&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false"
                   sandbox="allow-scripts allow-same-origin allow-popups allow-presentation allow-top-navigation-by-user-activation"
                 />
               </div>
-
               <div className="hm-sc-player">
-                <div className="hm-sc-label">02 · FEATURED</div>
                 <iframe
-                  title="YEHOSUA HIMSELF — Closing at Tunes of Sand"
+                  title="YEHOSUA HIMSELF â Closing at Tunes of Sand"
                   loading="lazy"
-                  width="100%"
-                  height="166"
-                  scrolling="no"
-                  frameBorder="no"
-                  allow="autoplay"
+                  width="100%" height="166"
+                  scrolling="no" frameBorder="no" allow="autoplay"
                   src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2280094370&color=%23a06820&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false"
                   sandbox="allow-scripts allow-same-origin allow-popups allow-presentation allow-top-navigation-by-user-activation"
                 />
@@ -230,25 +245,17 @@ const Home = ({ containerRef }) => {
             </div>
           </RevealOnScroll>
 
-          {/* Wave canvas */}
           <RevealOnScroll>
-            <canvas ref={canvasRef} className="hm-wave-canvas" />
+            <canvas ref={canvasRef} className="hm-wave-canvas" aria-hidden="true" />
           </RevealOnScroll>
 
-          {/* Genre convergence with subtitles */}
           <RevealOnScroll>
             <div className="hm-genre-row">
-              <div className="hm-genre-col">
-                <div className="hm-genre-label">Techno</div>
-                <div className="hm-genre-sub">Industrial Precision · Structure · Drive</div>
-              </div>
-              <div className="hm-genre-arrow">⟵</div>
+              <div className="hm-genre-label">Techno</div>
+              <div className="hm-genre-arrow" aria-hidden="true">âµ</div>
               <div className="hm-genre-center">Convergence</div>
-              <div className="hm-genre-arrow">⟶</div>
-              <div className="hm-genre-col">
-                <div className="hm-genre-label">Psytrance</div>
-                <div className="hm-genre-sub">Transcendence · Release · Ceremony</div>
-              </div>
+              <div className="hm-genre-arrow" aria-hidden="true">â¶</div>
+              <div className="hm-genre-label">Psytrance</div>
             </div>
           </RevealOnScroll>
         </div>
@@ -256,21 +263,17 @@ const Home = ({ containerRef }) => {
 
       <hr className="hm-div" />
 
-      {/* ========== LATEST RELEASE BAND ========== */}
+      {/* âââ LATEST RELEASE ââââââââââââââââââââââââââââââââ */}
       <div className="hm-latest-band">
-        <div className="hm-latest-label">LATEST RELEASE</div>
+        <div className="hm-latest-label">Latest Release</div>
         <div className="hm-latest-title">ARRIVAL</div>
       </div>
-
       <div className="hm-latest-player">
         <iframe
-          title="YEHOSUA HIMSELF — ARRIVAL"
+          title="YEHOSUA HIMSELF â ARRIVAL"
           loading="lazy"
-          width="100%"
-          height="166"
-          scrolling="no"
-          frameBorder="no"
-          allow="autoplay"
+          width="100%" height="166"
+          scrolling="no" frameBorder="no" allow="autoplay"
           src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2292147281&color=%23a06820&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false"
           sandbox="allow-scripts allow-same-origin allow-popups allow-presentation allow-top-navigation-by-user-activation"
         />
@@ -278,27 +281,18 @@ const Home = ({ containerRef }) => {
 
       <hr className="hm-div" />
 
-      {/* ========== QUOTE BAND ========== */}
+      {/* âââ QUOTE BAND ââââââââââââââââââââââââââââââââââââ */}
       <div className="hm-quote-band">
-        <div className="hm-quote-text">GOD IS A DJ · MUSIC IS RELIGION</div>
+        <div className="hm-quote-text">GOD IS A DJ Â· MUSIC IS RELIGION</div>
       </div>
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 02: THE ARTIST ========== */}
-      <section className="hm-s hm-artist" id="hm-artist">
-        <SectionHeader number="02" label="Behind the Music" title="THE <em>ARTIST</em>" />
-
-        {/* Press quote */}
-        <RevealOnScroll>
-          <blockquote className="hm-press-quote">
-            <p>
-              "A rare convergence of spiritual depth and dancefloor precision. YEHOSUA HIMSELF
-              doesn't just play music — he transmits frequency."
-            </p>
-            <cite>— Electronic Nomad Magazine, 2025</cite>
-          </blockquote>
-        </RevealOnScroll>
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          02 â THE ARTIST
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-artist" id="hm-artist" aria-label="The Artist">
+        <SectionHeader number="02" label="About the Artist" title="THE ARTIST" />
 
         <RevealOnScroll>
           <div className="hm-artist-content">
@@ -311,35 +305,26 @@ const Home = ({ containerRef }) => {
                 dancefloor and meditation.
               </p>
               <p>
-                Founded in the alpine silence, YEHOSUA's sound emerges from pilgrimage — literal and
+                Founded in the alpine silence, YEHOSUA's sound emerges from pilgrimageâliteral and
                 metaphorical. Each track is a waypoint in a larger journey. Each set is a ritual.
                 Sound of God Recordings embodies this philosophy: music as sacred transmutation.
               </p>
-
-              {/* Fans Of widget */}
-              <div className="hm-fans-of">
-                <div className="hm-fans-of-label">FANS OF &nbsp;/&nbsp; FOR FANS OF</div>
-                <div className="hm-fans-of-tags">
-                  {fansOf.map((artist) => (
-                    <span key={artist} className="hm-fans-of-tag">{artist}</span>
-                  ))}
-                </div>
-              </div>
-
-              <a href="#hm-pilgrimage" className="hm-artist-link" onClick={(e) => scrollToSection(e, 'hm-pilgrimage')}>
-                Explore the Alpine Journey →
+              <a
+                href="#hm-pilgrimage"
+                className="hm-artist-link"
+                onClick={(e) => scrollToSection(e, 'hm-pilgrimage')}
+              >
+                Explore the Alpine Journey â
               </a>
             </div>
-
             <div className="hm-artist-portrait">
-              <img src="/images/image-1.webp" alt="YEHOSUA HIMSELF" className="hm-portrait-img" />
-              {/* Journey callout */}
-              <div className="hm-journey-callout">
-                <div className="hm-journey-callout-label">THE SONIC JOURNEY · 2025</div>
-                <a href="#hm-pilgrimage" className="hm-journey-callout-link" onClick={(e) => scrollToSection(e, 'hm-pilgrimage')}>
-                  Read the full journey →
-                </a>
-              </div>
+              <img
+                src="/images/image-1.webp"
+                alt="YEHOSUA HIMSELF â Artist Portrait"
+                className="hm-portrait-img"
+                loading="lazy"
+                width="600" height="800"
+              />
             </div>
           </div>
         </RevealOnScroll>
@@ -347,150 +332,85 @@ const Home = ({ containerRef }) => {
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 03: THE JOURNEY (PILGRIMAGE) ========== */}
-      <section className="hm-s hm-pilgrimage" id="hm-pilgrimage">
-        <SectionHeader number="03" label="The Sonic Wanderer" title="THE <em>JOURNEY</em>" />
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          03 â THE JOURNEY
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-pilgrimage" id="hm-pilgrimage" aria-label="The Journey">
+        <SectionHeader number="03" label="The Pilgrimage" title="THE JOURNEY" />
 
-        {/* SVG Route Map */}
-        <RevealOnScroll>
-          <div className="hm-route-map-container">
-            <svg className="hm-route-map" viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#a06820" stopOpacity="0.3" />
-                  <stop offset="50%" stopColor="#c07e28" stopOpacity="0.7" />
-                  <stop offset="100%" stopColor="#a06820" stopOpacity="0.3" />
-                </linearGradient>
-              </defs>
-
-              {/* Route paths */}
-              <path d="M318,193 C280,250 200,290 120,315" fill="none" stroke="url(#routeGrad)" strokeWidth="2" strokeDasharray="6,4" opacity="0.6" />
-              <path d="M318,193 C330,150 335,120 340,85" fill="none" stroke="url(#routeGrad)" strokeWidth="2" strokeDasharray="6,4" opacity="0.6" />
-              <path d="M318,193 C340,230 360,270 378,295" fill="none" stroke="url(#routeGrad)" strokeWidth="2" strokeDasharray="6,4" opacity="0.6" />
-              <path d="M318,193 C290,160 260,140 240,118" fill="none" stroke="url(#routeGrad)" strokeWidth="2" strokeDasharray="6,4" opacity="0.6">
-                <animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.5s" repeatCount="indefinite" />
-              </path>
-
-              {/* City markers */}
-              <circle cx="318" cy="193" r="5" fill="#a06820" opacity="0.9" />
-              <text x="318" y="183" textAnchor="middle" fill="#a06820" fontSize="9" fontFamily="var(--f-mono)" fontWeight="400">BERCHTESGADEN</text>
-              <text x="318" y="210" textAnchor="middle" fill="rgba(160,104,32,0.5)" fontSize="7" fontFamily="var(--f-mono)">START · JAN 2025</text>
-
-              <circle cx="120" cy="315" r="4" fill="#a06820" opacity="0.7" />
-              <text x="120" y="335" textAnchor="middle" fill="#a06820" fontSize="9" fontFamily="var(--f-mono)" fontWeight="400">TARIFA</text>
-              <text x="120" y="345" textAnchor="middle" fill="rgba(160,104,32,0.5)" fontSize="7" fontFamily="var(--f-mono)">SOUTHERN REACH</text>
-
-              <circle cx="340" cy="85" r="4" fill="#a06820" opacity="0.7" />
-              <text x="340" y="75" textAnchor="middle" fill="#a06820" fontSize="9" fontFamily="var(--f-mono)" fontWeight="400">COPENHAGEN</text>
-              <text x="340" y="65" textAnchor="middle" fill="rgba(160,104,32,0.5)" fontSize="7" fontFamily="var(--f-mono)">NORTHERN REACH</text>
-
-              <circle cx="378" cy="295" r="4" fill="#a06820" opacity="0.7" />
-              <text x="378" y="285" textAnchor="middle" fill="#a06820" fontSize="9" fontFamily="var(--f-mono)" fontWeight="400">ROME</text>
-              <text x="378" y="312" textAnchor="middle" fill="rgba(160,104,32,0.5)" fontSize="7" fontFamily="var(--f-mono)">ETERNAL CITY</text>
-
-              {/* Amsterdam - pulsing current location */}
-              <circle cx="240" cy="118" r="5" fill="#c07e28" opacity="0.9">
-                <animate attributeName="r" values="4.5;6.5;4.5" dur="2s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite" />
-              </circle>
-              <text x="240" y="108" textAnchor="middle" fill="#c07e28" fontSize="9" fontFamily="var(--f-mono)" fontWeight="600">AMSTERDAM</text>
-              <text x="240" y="138" textAnchor="middle" fill="rgba(192,126,40,0.6)" fontSize="7" fontFamily="var(--f-mono)">ONGOING</text>
-            </svg>
-          </div>
-        </RevealOnScroll>
-
-        {/* Journey stats */}
         <RevealOnScroll>
           <div className="hm-journey-content">
-            <div className="hm-journey-stats">
-              <div className="hm-stat">
-                <div className="hm-stat-number">+10,000</div>
+            <div className="hm-journey-stats" role="list">
+              <div className="hm-stat" role="listitem">
+                <div className="hm-stat-number">10,000+</div>
                 <div className="hm-stat-label">KM on Foot</div>
               </div>
-              <div className="hm-stat">
-                <div className="hm-stat-number">+10</div>
-                <div className="hm-stat-label">Countries</div>
+              <div className="hm-stat" role="listitem">
+                <div className="hm-stat-number">18</div>
+                <div classNamd="hm-stat-label">European Nations</div>
               </div>
-              <div className="hm-stat">
-                <div className="hm-stat-number">+15</div>
-                <div className="hm-stat-label">Months</div>
-              </div>
-              <div className="hm-stat">
-                <div className="hm-stat-number">+70</div>
-                <div className="hm-stat-label">Venues</div>
+              <div className="hm-stat" role="listitem">
+                <div className="hm-stat-number">365</div>
+                <div className="hm-stat-label">Days of Journey</div>
               </div>
             </div>
-
             <p className="hm-journey-text">
               This is not a tour. This is a pilgrimage. Walking from the Matterhorn to the Aegean,
               YEHOSUA has traversed the spine of Europe on foot, gathering sounds, absorbing sacred
-              geography, and transforming every step into signal. No tour bus. Just a backpack and decks.
-              The Alpine journey is the origin myth of this music.
+              geography, and transforming every step into signal. The Alpine journey is the origin myth
+              of this music.
             </p>
           </div>
-        </RevealOnScroll>
-
-        {/* Journey archive cards */}
-        <RevealOnScroll>
-          <div className="hm-journey-archive">
-            <div className="hm-journey-archive-label">JOURNEY ARCHIVE</div>
-            <div className="hm-journey-archive-grid">
-              {journeyArchive.map((item, idx) => (
-                <div key={idx} className="hm-journey-archive-card">
-                  <img src={item.image} alt={item.title} className="hm-journey-archive-img" />
-                  <div className="hm-journey-archive-overlay">
-                    <div className="hm-journey-archive-title">{item.title}</div>
-                    <div className="hm-journey-archive-sub">{item.subtitle}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        {/* Inspirational quote */}
-        <RevealOnScroll>
-          <blockquote className="hm-journey-quote">
-            <p>
-              "The road itself became the instrument. Every mountain pass, every coastline,
-              every abandoned factory along the way — they all shaped the frequency."
-            </p>
-            <cite>— YEHOSUA HIMSELF</cite>
-          </blockquote>
         </RevealOnScroll>
 
         <div
           className="hm-journey-bg"
+          aria-hidden="true"
           style={{ backgroundImage: `url('/images/image-1.webp')` }}
         />
       </section>
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 04: VISUAL ARCHIVE (GALLERY) ========== */}
-      <section className="hm-s hm-gallery" id="hm-gallery">
-        <SectionHeader number="04" label="Visual Documentation" title="VISUAL <em>ARCHIVE</em>" />
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          04 â VISUAL ARCHIVE
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-gallery" id="hm-gallery" aria-label="Visual Archive">
+        <SectionHeader number="04" label="Visual Documentation" title="VISUAL ARCHIVE" />
 
         <RevealOnScroll>
           <div className="hm-gallery-container">
-            <div className="hm-gallery-scroll">
+            <div className="hm-gallery-scroll" ref={galleryScrollRef}>
               {galleryItems.map((item) => (
-                <div key={item.id} className="hm-gallery-card">
-                  <img src={item.image} alt={item.location} />
+             <div key={item.id} className="hm-gallery-card">
+                  <img
+                    src={item.image}
+                    alt={`${item.location} â YEHOSUA HIMSELF`}
+                    loading="lazy"
+                    width="400" height="400"
+                  />
                   <div className="hm-gallery-label">{item.location}</div>
                 </div>
               ))}
             </div>
 
             <div className="hm-gallery-nav">
-              <button className="hm-gallery-arrow hm-gallery-prev">←</button>
-              <button className="hm-gallery-arrow hm-gallery-next">→</button>
+              <button
+                className="hm-gallery-arrow hm-gallery-prev"
+                aria-label="Previous images"
+                onClick={() => scrollGallery(-1)}
+              >â</button>
+              <button
+                className="hm-gallery-arrow hm-gallery-next"
+                aria-label="Next images"
+                onClick={() => scrollGallery(1)}
+              >â</button>
             </div>
 
             <div className="hm-gallery-stats">
               <span className="hm-gallery-count">6 Locations</span>
-              <span className="hm-gallery-sep">·</span>
-              <span className="hm-gallery-desc">Alps, Mountains, Cities, Venues</span>
+              <span className="hm-gallery-sep" aria-hidden="true">Â·</span>
+              <span className="hm-gallery-desc">Alps Â· Mountains Â· Cities Â· Venues</span>
             </div>
           </div>
         </RevealOnScroll>
@@ -498,16 +418,18 @@ const Home = ({ containerRef }) => {
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 05: THE CALENDAR ========== */}
-      <section className="hm-s hm-upcoming" id="hm-upcoming">
-        <SectionHeader number="05" label="Available Dates" title="THE <em>CALENDAR</em>" />
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          05 â THE CALENDAR
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-upcoming" id="hm-upcoming" aria-label="Upcoming Dates">
+        <SectionHeader number="05" label="Confirmed Dates" title="THE CALENDAR" />
 
         <RevealOnScroll>
-          <div className="hm-ev-count">8 Confirmed Dates · 2026</div>
+          <div className="hm-ev-count" aria-live="polite">8 Confirmed Dates Â· 2026</div>
 
-          <div className="hm-ev-grid">
-            {events.map((event, idx) => (
-              <div key={idx} className="hm-ev-card">
+          <div className="hm-ev-grid" role="list">
+            {events.map((event) => (
+              <article key={`${event.day}-${event.month}`} className="hm-ev-card" role="listitem">
                 <div className="hm-ev-date-wrap">
                   <div className="hm-ev-day">{event.day}</div>
                   <div className="hm-ev-month">{event.month}</div>
@@ -520,123 +442,104 @@ const Home = ({ containerRef }) => {
                   <button
                     className="hm-ev-join"
                     onClick={(e) => scrollToSection(e, 'hm-contact')}
+                    aria-label={`Join ${event.name} â contact for booking`}
                   >
-                    Join →
+                    Join â
                   </button>
                 </div>
-              </div>
+              </article>
             ))}
-
-            {/* Reserve a date card */}
-            <div className="hm-ev-card hm-ev-reserve-card" onClick={(e) => scrollToSection(e, 'hm-contact')}>
-              <div className="hm-ev-reserve-icon">+</div>
-              <div className="hm-ev-reserve-text">RESERVE A DATE</div>
-              <div className="hm-ev-reserve-sub">Enquire for a private or festival booking</div>
-            </div>
           </div>
         </RevealOnScroll>
       </section>
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 06: OPEN WINDOWS (BOOKING CODEX) ========== */}
-      <section className="hm-s hm-booking" id="hm-booking">
-        <SectionHeader number="06" label="Availability Codex · 2026" title="OPEN <em>WINDOWS</em>" />
-
-        {/* Urgency banner */}
-        <RevealOnScroll>
-          <div className="hm-urgency-banner">
-            <span className="hm-urgency-dot" />
-            <span>ONLY 3 WINDOWS REMAIN</span>
-          </div>
-        </RevealOnScroll>
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          06 â OPEN WINDOWS (BOOKING CODEX)
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-booking" id="hm-booking" aria-label="Booking Windows">
+        <SectionHeader number="06" label="Availability & Booking" title="OPEN WINDOWS" />
 
         <RevealOnScroll>
           <div className="codex-grid">
-            {/* Card 1: Summer 2026 */}
             <div className="codex-card codex-limited">
-              <div className="codex-card-ghost">S</div>
+              <div className="codex-card-ghost" aria-hidden="true">S</div>
               <div className="codex-card-status-row">
-                <span className="codex-status-dot" />
-                <span className="codex-status-label">Last Dates — Priority Open</span>
+                <span className="codex-status-dot" aria-hidden="true" />
+                <span className="codex-status-label">Last Dates â Priority Open</span>
               </div>
               <div className="codex-card-period">Summer<br />2026</div>
-              <span className="codex-card-sub">Riviera · Priority Season</span>
+              <span className="codex-card-sub">Riviera Â· Priority Season</span>
               <div className="codex-card-detail">
-                The peak. Côte d'Azur, Algarve,
-                festival mainstages. <strong>Mostly claimed.</strong>
+                The peak. CÃ´te d'Azur, Algarve, festival mainstages. <strong>Mostly claimed.</strong>
               </div>
-              <div className="codex-scarcity">⚑ &nbsp;2–3 dates remain · Negotiating now</div>
+              <div className="codex-scarcity">â&nbsp;&nbsp;2â3 dates remain Â· Negotiating now</div>
               <a href="#hm-contact" className="codex-card-cta" onClick={(e) => scrollToSection(e, 'hm-contact')}>
-                Claim Your Date →
+                Claim Your Date â
               </a>
             </div>
 
-            {/* Card 2: Autumn/Winter 2026 */}
             <div className="codex-card codex-limited">
-              <div className="codex-card-ghost">A</div>
+              <div className="codex-card-ghost" aria-hidden="true">A</div>
               <div className="codex-card-status-row">
-                <span className="codex-status-dot" />
-                <span className="codex-status-label">Selective — Enquire Now</span>
+                <span className="codex-status-dot" aria-hidden="true" />
+                <span className="codex-status-label">Selective â Enquire Now</span>
               </div>
               <div className="codex-card-period">Autumn<br />/ Winter</div>
-              <span className="codex-card-sub">October–December 2026</span>
+              <span className="codex-card-sub">OctoberâDecember 2026</span>
               <div className="codex-card-detail">
-                October is sealed. November & December:
-                <strong> selective — curated enquiries only.</strong>
+                October is sealed. November & December:<br />
+                <strong>selective â curated enquiries only.</strong>
               </div>
-              <div className="codex-scarcity">◈ &nbsp;Nov–Dec · Only 4 Slots Remain</div>
+              <div className="codex-scarcity">â&nbsp;&nbsp;NovâDec Â· Only 4 Slots Remain</div>
               <a href="#hm-contact" className="codex-card-cta" onClick={(e) => scrollToSection(e, 'hm-contact')}>
-                Reserve a Date →
+                Reserve a Date â
               </a>
             </div>
 
-            {/* Card 3: Q1-Q2 2026 */}
             <div className="codex-card codex-limited">
-              <div className="codex-card-ghost">Q</div>
+              <div className="codex-card-ghost" aria-hidden="true">Q</div>
               <div className="codex-card-status-row">
-                <span className="codex-status-dot" />
-                <span className="codex-status-label">Closing — Final Slots</span>
+                <span className="codex-status-dot" aria-hidden="true" />
+                <span className="codex-status-label">Closing â Final Slots</span>
               </div>
-              <div className="codex-card-period">Q1 – Q2<br />2026</div>
-              <span className="codex-card-sub">January–June 2026</span>
+              <div className="codex-card-period">Q1 â Q2<br />2026</div>
+              <span className="codex-card-sub">JanuaryâJune 2026</span>
               <div className="codex-card-detail">
-                Q1 is sealed. May & June:
-                <strong> final 2 dates available.</strong> Priority given to festivals.
+                Q1 is sealed. May & June: <strong>final 2 dates available.</strong> Priority given to festivals.
               </div>
-              <div className="codex-scarcity">⚑ &nbsp;May–Jun · Last 2 dates · Act now</div>
+              <div className="codex-scarcity">â&nbsp;&nbsp;MayâJun Â· Last 2 dates Â· Act now</div>
               <a href="#hm-contact" className="codex-card-cta" onClick={(e) => scrollToSection(e, 'hm-contact')}>
-                Reserve 2026 Date →
+                Reserve 2026 Date â
               </a>
             </div>
 
-            {/* Card 4: Q3-Q4 2026 */}
             <div className="codex-card codex-open">
-              <div className="codex-card-ghost">O</div>
+              <div className="codex-card-ghost" aria-hidden="true">O</div>
               <div className="codex-card-status-row">
-                <span className="codex-status-dot" />
+                <span className="codex-status-dot" aria-hidden="true" />
                 <span className="codex-status-label">Window Open</span>
               </div>
-              <div className="codex-card-period">Q3 – Q4<br />2026</div>
-              <span className="codex-card-sub">July–December 2026</span>
+              <div className="codex-card-period">Q3 â Q4<br />2026</div>
+              <span className="codex-card-sub">JulyâDecember 2026</span>
               <div className="codex-card-detail">
-                The later season is open for enquiry.
-                <strong> Early commitments welcomed.</strong>
+                The later season is open for enquiry. <strong>Early commitments welcomed.</strong>
               </div>
-              <div className="codex-scarcity">◌ &nbsp;Q3–Q4 · Enquiries welcome</div>
+              <div className="codex-scarcity">â&nbsp;&nbsp;Q3âQ4 Â· Enquiries welcome</div>
               <a href="#hm-contact" className="codex-card-cta" onClick={(e) => scrollToSection(e, 'hm-contact')}>
-                Secure Your Window →
+                Secure Your Window â
               </a>
             </div>
           </div>
 
           <div className="codex-footer">
             <p className="codex-footer-note">
-              Selective booking only. Management reviews all enquiries within 72 hours. Confirmed
-              holds require signed contract. Lead time: minimum 3 weeks.
+              Selective booking only. Management reviews all enquiries within 72 hours.
+              Confirmed holds require signed contract. Lead time: minimum 3 weeks.
             </p>
             <a href="#hm-contact" className="btn-reserve-premium" onClick={(e) => scrollToSection(e, 'hm-contact')}>
-              Reserve a Date →
+              Reserve a Date â
             </a>
           </div>
         </RevealOnScroll>
@@ -644,74 +547,144 @@ const Home = ({ containerRef }) => {
 
       <hr className="hm-div" />
 
-      {/* ========== SECTION 07: CONTACT / BOOKING ========== */}
-      <section className="hm-s hm-contact" id="hm-contact">
-        <SectionHeader number="07" label="Booking & Inquiries" title="LET'S <em>CONNECT</em>" />
+      {/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+          07 â LET'S CONNECT
+      âââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+      <section className="hm-s hm-contact" id="hm-contact" aria-label="Contact and Booking">
+        <SectionHeader number="07" label="Booking & Inquiries" title="LET'S CONNECT" />
 
         <RevealOnScroll>
           <div className="hm-book-block">
             <div className="hm-book-col">
-              <div className="hm-book-label">Festival & Agency Bookings</div>
+              <div className="hm-book-label">Festival &amp; Agency Bookings</div>
               <div className="hm-book-name">Management</div>
-              <a href="mailto:booking@yehosua.com" className="hm-book-email">
-                booking@yehosua.com
-              </a>
+              <a href="mailto:booking@yehosua.com" className="hm-book-email">booking@yehosua.com</a>
             </div>
-
             <div className="hm-book-col">
-              <div className="hm-book-label">Media & Press Inquiries</div>
+              <div className="hm-book-label">Media &amp; Press Inquiries</div>
               <div className="hm-book-name">Press</div>
-              <a href="mailto:press@yehosua.com" className="hm-book-email">
-                press@yehosua.com
-              </a>
+              <a href="mailto:press@yehosua.com" className="hm-book-email">press@yehosua.com</a>
             </div>
-
             <div className="hm-book-col">
               <div className="hm-book-label">Sound of God Recordings</div>
               <div className="hm-book-name">Label</div>
-              <a href="mailto:label@soundofgod.com" className="hm-book-email">
-                label@soundofgod.com
-              </a>
+              <a href="mailto:label@soundofgod.com" className="hm-book-email">label@soundofgod.com</a>
             </div>
           </div>
 
-          {/* Booking Form */}
           <div className="hm-form-container">
             <h3 className="hm-form-title">Booking Inquiry Form</h3>
-            <form className="hm-form" action="https://formspree.io/f/xblgyznq" method="POST">
-              <div className="hm-form-row">
-                <input type="text" name="name" placeholder="Your Name" required className="hm-form-input" />
-                <input type="email" name="email" placeholder="Email Address" required className="hm-form-input" />
+
+            {formState.succeeded ? (
+              <div className="hm-form-success" role="status">
+                <div className="hm-form-success-icon">â</div>
+                <p>Your inquiry has been received. We'll respond within 72 hours.</p>
               </div>
+            ) : (
+              <form
+                className="hm-form"
+                onSubmit={handleSubmit}
+                noValidate
+                aria-label="Booking inquiry form"
+              >
+                <div className="hm-form-row">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    required
+                    className="hm-form-input"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    aria-label="Your name"
+                    autoComplete="name"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    required
+                    className="hm-form-input"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    aria-label="Email address"
+                    autoComplete="email"
+                  />
+                </div>
 
-              <div className="hm-form-row">
-                <input type="text" name="festival_venue" placeholder="Festival / Venue Name" required className="hm-form-input" />
-                <input type="text" name="location" placeholder="City / Country" required className="hm-form-input" />
-              </div>
+                <div className="hm-form-row">
+                  <input
+                    type="text"
+                    name="festival_venue"
+                    placeholder="Festival / Venue Name"
+                    required
+                    className="hm-form-input"
+                    value={formData.festival_venue}
+                    onChange={handleFormChange}
+                    aria-label="Festival or venue name"
+                  />
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder="City / Country"
+                    required
+                    className="hm-form-input"
+                    value={formData.location}
+                    onChange={handleFormChange}
+                    aria-label="City and country"
+                  />
+                </div>
 
-              <div className="hm-form-row">
-                <input type="date" name="event_date" required className="hm-form-input" />
-                <select name="genre_focus" className="hm-form-input">
-                  <option value="">Select Genre Focus</option>
-                  <option value="techno">Techno</option>
-                  <option value="psytrance">Psytrance</option>
-                  <option value="industrial">Industrial</option>
-                  <option value="ambient">Ambient</option>
-                  <option value="mixed">Mixed</option>
-                </select>
-              </div>
+                <div className="hm-form-row">
+                  <input
+                    type="date"
+                    name="event_date"
+                    required
+                    className="hm-form-input"
+                    value={formData.event_date}
+                    onChange={handleFormChange}
+                    aria-label="Event date"
+                  />
+                  <select
+                    name="genre_focus"
+                    className="hm-form-input"
+                    value={formData.genre_focus}
+                    onChange={handleFormChange}
+                    aria-label="Genre focus"
+                  >
+                    <option value="">Select Genre Focus</option>
+                    <option value="techno">Techno</option>
+                    <option value="psytrance">Psytrance</option>
+                    <option value="industrial">Industrial</option>
+                    <option value="ambient">Ambient</option>
+                    <option value="mixed">Mixed</option>
+                  </select>
+                </div>
 
-              <textarea
-                name="message"
-                placeholder="Tell us about your event, venue capacity, audience, and any special requirements..."
-                rows="5"
-                className="hm-form-textarea"
-              />
+                <textarea
+                  name="message"
+                  placeholder="Tell us about your event, venue capacity, audience, and any special requirements..."
+                  rows="5"
+                  className="hm-form-textarea"
+                  value={formData.message}
+                  onChange={handleFormChange}
+                  aria-label="Event details and requirements"
+                />
 
-              <button type="submit" className="hm-form-submit">
-                Send Inquiry
-              </button>
-            </form>
+                {formState.error && (
+                  <div className="hm-form-error" role="alert">{formState.error}</div>
+                )}
+
+                <button
+                  type="submit"
+                  className="hm-form-submit"
+                  disabled={formState.submitting}
+                  aria-busy={formState.submitting}
+                >
+                  {formState.submitting ? 'Sendingâ¦' : 'Send Inquiry'}
+                </button>
+              </form>
+            )}
           </div>
         </RevealOnScroll>
       </section>
