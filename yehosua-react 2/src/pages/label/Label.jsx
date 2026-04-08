@@ -57,7 +57,7 @@ const EVENTS = [
     date: '19',
     month: 'JUL',
     artist: 'YEHOSUA HIMSELF',
-    title: 'Côte d'Azur Sunset Session',
+        title: "Côte d'Azur Sunset Session",
     venue: 'Le Rooftop',
     city: 'Nice, FR',
     status: 'OPEN',
