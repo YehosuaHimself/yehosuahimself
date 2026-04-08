@@ -110,8 +110,8 @@ const Landing = () => {
             <span className="land-tile-num">01 ——</span>
             <div className="land-tile-tag">Experience</div>
             <div className="land-tile-title">Home</div>
-            <p className="land-tile-desc">The sonic universe. Sets, dates, the journey.</p>
-            <div className="land-tile-audience">Ravers · Festival Heads · Bookers</div>
+            <p className="land-tile-desc">The complete world of YEHOSUA HIMSELF.</p>
+            <div className="land-tile-audience">Fans · General Public · Bookers</div>
             <span className="land-tile-arrow">↗</span>
             <div className="land-tile-ghost">I</div>
           </button>
@@ -128,8 +128,8 @@ const Landing = () => {
               Sound of God<br />
               Recordings
             </div>
-            <p className="land-tile-desc">Where sacred sound finds form.</p>
-            <div className="land-tile-audience">Labels · Producers · Press · Industry</div>
+            <p className="land-tile-desc">Independent electronic music label.</p>
+            <div className="land-tile-audience">DJs · Producers · Industry · Outlets</div>
             <span className="land-tile-arrow">↗</span>
             <div className="land-tile-ghost">II</div>
           </button>
@@ -154,7 +154,6 @@ const Landing = () => {
         </div>
       </div>
     </div>
-  );
-};
+  +}
 
 export default Landing;
