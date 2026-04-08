@@ -1,0 +1,97 @@
+/* ╔════════════════════════════════════════════════════════════╗
+   ║  YEHOSUA HIMSELF — CSS Custom Properties                  ║
+   ║  Design System v3.0 — Simplicity is mastery              ║
+   ╚════════════════════════════════════════════════════════════╝ */
+
+:root {
+  /* ─────────────────────────────────────────────────────────
+     COLOR PALETTE: Warm cream tones + gold accents
+     ────────────────────────────────────────────────────────── */
+
+  /* Backgrounds: cream → taupe → dark */
+  --bg0: #f5f0e8;      /* Light cream */
+  --bg1: #ede5d4;      /* Cream-tan */
+  --bg2: #e6dcc8;      /* Warm tan */
+  --bg3: #ddd2ba;      /* Darker tan */
+
+  /* Text colors: dark ink shades */
+  --ink: #1c1007;      /* Primary text (very dark brown) */
+  --ink2: #3a2710;     /* Secondary text (medium brown) */
+  --ink3: #5e3d1e;     /* Tertiary text (lighter brown) */
+
+  /* Text utility colors */
+  --dim: #9a7e5a;      /* Muted text */
+  --dim2: #b89b74;     /* Lighter muted text */
+
+  /* Gold/Accent colors */
+  --gold: #a06820;     /* Primary gold */
+  --gold-b: #c07e28;   /* Bright gold */
+  --gold-lt: rgba(160, 104, 32, 0.10);    /* Light gold (10% opacity) */
+  --gold-line: rgba(160, 104, 32, 0.28);  /* Gold for dividers (28% opacity) */
+
+  /* Line/Border colors */
+  --line: rgba(28, 16, 7, 0.10);    /* Light borders (ink at 10%) */
+  --line2: rgba(28, 16, 7, 0.18);   /* Heavier borders (ink at 18%) */
+
+  /* Dark mode colors */
+  --dk: #0d0a06;       /* Very dark brown (near-black) */
+  --dk2: #161208;      /* Dark brown */
+
+  /* ─────────────────────────────────────────────────────────
+     TYPOGRAPHY: Font Family Stack
+     NOTE: Use font-display: swap in @font-face for web fonts
+     to ensure text is always visible during font load
+     ────────────────────────────────────────────────────────── */
+
+  --f-head: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-mono: "DM Mono", monospace;
+  --f-serif: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+
+  /* ─────────────────────────────────────────────────────────
+     TYPE SCALE: Responsive with clamp()
+     Uses modular scale: 1.125 ratio (minor third)
+     ────────────────────────────────────────────────────────── */
+
+  --f-size-xs: clamp(0.78rem, 1.1vw, 0.88rem);
+  --f-size-sm: clamp(0.88rem, 1.3vw, 1rem);
+  --f-size-md: clamp(1rem, 1.5vw, 1.15rem);
+  --f-size-lg: clamp(1.2rem, 2vw, 1.6rem);
+  --f-size-xl: clamp(1.8rem, 3.5vw, 2.8rem);
+  --f-size-xxl: clamp(2.4rem, 5vw, 4rem);
+  --f-size-hero: clamp(3rem, 8vw, 6.5rem);
+
+  /* ─────────────────────────────────────────────────────────
+     SPACING: Base unit system
+     ────────────────────────────────────────────────────────── */
+
+  --pad: 8vw;  /* Standard horizontal padding */
+
+  /* ─────────────────────────────────────────────────────────
+     ANIMATION & TRANSITIONS: Duration and easing tokens
+     ────────────────────────────────────────────────────────── */
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-smooth: cubic-bezier(0.45, 0, 0.55, 1);
+  --dur-reveal: 0.8s;
+  --blur-glass: 20px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   REDUCED MOTION: Respect user preferences
+   ────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.05s;
+    --dur-mid: 0.1s;
+    --dur-slow: 0.15s;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --dur-fast: 0.15s;
+    --dur-mid: 0.3s;
+    --dur-slow: 0.6s;
+  }
+}

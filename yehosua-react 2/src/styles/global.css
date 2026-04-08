@@ -1,0 +1,308 @@
+/* ╔════════════════════════════════════════════════════════════╗
+   ║  YEHOSUA HIMSELF — Global Styles & Resets                 ║
+   ║  Design System v3.0 + Premium Enhancements                ║
+   ╚════════════════════════════════════════════════════════════╝ */
+
+@import url('./variables.css');
+
+/* ─────────────────────────────────────────────────────────
+   RESET & BASE STYLES
+   ────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: default;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: var(--bg0);
+  font-family: var(--f-head);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─────────────────────────────────────────────────────────
+   TEXT SELECTION
+   ────────────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(160, 104, 32, 0.2);
+  color: var(--ink);
+}
+
+/* ─────────────────────────────────────────────────────────
+   CUSTOM CURSOR
+   ────────────────────────────────────────────────────────── */
+
+#g-cur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999999;
+  pointer-events: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold-b);
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  transition: opacity 0.15s;
+  will-change: transform;
+}
+
+#g-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999998;
+  pointer-events: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(192, 126, 40, 0.65);
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  will-change: transform;
+  transition: border-radius 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              width 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              height 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              border-color 0.2s;
+}
+
+#g-ring.moving {
+  border-radius: 50%;
+}
+
+@media (pointer: coarse) {
+  #g-cur,
+  #g-ring {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    cursor: auto;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   PAGE CONTAINER
+   ────────────────────────────────────────────────────────── */
+
+.page {
+  display: none;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+  contain: layout style;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.page.active {
+  display: block;
+  animation: pgIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+}
+
+@keyframes pgIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.998);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   PAGE CONTENT TRANSITIONS (Premium Enhancement)
+   ────────────────────────────────────────────────────────── */
+
+.page-content {
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.page-content.transitioning {
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(4px);
+}
+
+/* ─────────────────────────────────────────────────────────
+   FOCUS STYLES (Premium Enhancement)
+   ────────────────────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION: Scroll Reveal
+   ────────────────────────────────────────────────────────── */
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rv,
+.rv2 {
+  animation: revealUp 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  will-change: transform, opacity;
+}
+
+.d1 {
+  animation-delay: 0.1s;
+}
+.d2 {
+  animation-delay: 0.2s;
+}
+.d3 {
+  animation-delay: 0.35s;
+}
+.d4 {
+  animation-delay: 0.5s;
+}
+
+/* ─────────────────────────────────────────────────────────
+   ACCESSIBILITY: Skip Link
+   ────────────────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 8px;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCROLLBAR: Custom styling
+   ────────────────────────────────────────────────────────── */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.page::-webkit-scrollbar {
+  width: 10px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: rgba(160, 104, 32, 0.4);
+  border-radius: 5px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: rgba(160, 104, 32, 0.6);
+}
+
+/* Firefox */
+.page {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(160, 104, 32, 0.4) transparent;
+}
+
+/* ─────────────────────────────────────────────────────────
+   PRINT STYLES
+   ────────────────────────────────────────────────────────── */
+
+@media print {
+  * {
+    background: transparent;
+    color: #000;
+    box-shadow: none;
+    text-shadow: none;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   REDUCED MOTION SUPPORT: Comprehensive accessibility
+   ────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .page {
+    scroll-behavior: auto;
+  }
+
+  /* Disable will-change when motion is reduced for performance */
+  [will-change] {
+    will-change: auto !important;
+  }
+}

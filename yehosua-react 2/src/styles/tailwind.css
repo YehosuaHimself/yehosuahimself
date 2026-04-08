@@ -1,0 +1,147 @@
+/* Tailwind CSS — loaded before all other styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Custom utility layer for YEHOSUA design tokens ─── */
+@layer utilities {
+  /* Text balance for headlines */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Gold glow effect */
+  .gold-glow {
+    text-shadow: 0 0 20px rgba(160, 104, 32, 0.3);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-gold {
+    background: rgba(160, 104, 32, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(160, 104, 32, 0.12);
+  }
+
+  /* Premium hover lift */
+  .hover-lift {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(28, 16, 7, 0.12);
+  }
+
+  /* 3D perspective container */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* Magnetic hover (slight scale + translate toward cursor) */
+  .hover-magnetic {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hover-magnetic:hover {
+    transform: scale(1.03);
+  }
+
+  /* Smooth reveal from bottom */
+  .reveal-base {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-base.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger children delays */
+  .stagger-1 {
+    transition-delay: 0.1s;
+  }
+
+  .stagger-2 {
+    transition-delay: 0.2s;
+  }
+
+  .stagger-3 {
+    transition-delay: 0.3s;
+  }
+
+  .stagger-4 {
+    transition-delay: 0.4s;
+  }
+
+  .stagger-5 {
+    transition-delay: 0.5s;
+  }
+
+  /* Line reveal animation */
+  .line-reveal {
+    width: 0;
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .line-reveal.in {
+    width: 100%;
+  }
+
+  /* Premium underline hover */
+  .hover-underline-gold {
+    position: relative;
+  }
+
+  .hover-underline-gold::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hover-underline-gold:hover::after {
+    width: 100%;
+  }
+
+  /* Blur-in text reveal */
+  .blur-in {
+    filter: blur(8px);
+    opacity: 0;
+    transition: filter 1s ease-out, opacity 1s ease-out;
+  }
+
+  .blur-in.in {
+    filter: blur(0);
+    opacity: 1;
+  }
+
+  /* Image zoom on hover */
+  .img-zoom {
+    overflow: hidden;
+  }
+
+  .img-zoom img {
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .img-zoom:hover img {
+    transform: scale(1.08);
+  }
+}

@@ -1,0 +1,82 @@
+/* Custom Cursor - Gold dot */
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999999;
+  pointer-events: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c07e28;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  transition: opacity 0.15s;
+  will-change: transform;
+  box-shadow: 0 0 6px rgba(192, 126, 40, 0.4);
+}
+
+.custom-cursor-dot.dark {
+  background: #d4a574;
+  box-shadow: 0 0 6px rgba(212, 165, 116, 0.4);
+}
+
+.custom-cursor-dot.moving {
+  width: 8px;
+  height: 8px;
+  opacity: 1;
+}
+
+/* Custom Cursor - Ring follower */
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999998;
+  pointer-events: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(192, 126, 40, 0.65);
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  will-change: transform;
+  transition: border-radius 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    width 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    height 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 0.2s;
+  box-shadow: inset 0 0 8px rgba(192, 126, 40, 0.15);
+}
+
+.custom-cursor-ring.dark {
+  border-color: rgba(212, 165, 116, 0.65);
+  box-shadow: inset 0 0 8px rgba(212, 165, 116, 0.15);
+}
+
+.custom-cursor-ring.moving {
+  border-radius: 50%;
+}
+
+/* Expand ring on hover over interactive elements */
+.custom-cursor-ring.expanded {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  border-color: rgba(192, 126, 40, 0.9);
+  box-shadow: inset 0 0 12px rgba(192, 126, 40, 0.25),
+    0 0 12px rgba(192, 126, 40, 0.2);
+}
+
+.custom-cursor-ring.dark.expanded {
+  border-color: rgba(212, 165, 116, 0.9);
+  box-shadow: inset 0 0 12px rgba(212, 165, 116, 0.25),
+    0 0 12px rgba(212, 165, 116, 0.2);
+}
+
+/* On touch devices, hide custom cursor */
+@media (pointer: coarse) {
+  .custom-cursor-dot,
+  .custom-cursor-ring {
+    display: none !important;
+  }
+}

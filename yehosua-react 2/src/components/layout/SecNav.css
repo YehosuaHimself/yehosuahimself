@@ -1,0 +1,200 @@
+/* Section Navigation - Right side dots */
+.sec-nav {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  pointer-events: auto;
+}
+
+.sec-nav-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-end;
+}
+
+/* Each section dot wrapper */
+.sec-nav-dot-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* The dot itself */
+.sec-nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(160, 104, 32, 0.3);
+  border: 1.5px solid rgba(160, 104, 32, 0.5);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding: 0;
+  margin: 0;
+}
+
+.sec-nav-dot:hover {
+  background: rgba(160, 104, 32, 0.6);
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(160, 104, 32, 0.4);
+  transform: scale(1.3);
+}
+
+.sec-nav-dot.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(160, 104, 32, 0.5);
+  transform: scale(1.4);
+  width: 10px;
+  height: 10px;
+  animation: activeDotPulse 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes activeDotPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(160, 104, 32, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(160, 104, 32, 0.8);
+  }
+}
+
+/* Label tooltip */
+.sec-nav-label {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-1rem);
+  white-space: nowrap;
+  font-family: var(--f-head);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: rgba(160, 104, 32, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Label shows on hover */
+.sec-nav-dot-wrapper:hover .sec-nav-label,
+.sec-nav-label.active {
+  opacity: 1;
+  transform: translateY(-50%) translateX(-1.2rem);
+  color: var(--gold);
+}
+
+/* Peek animation - shows briefly on section change */
+.sec-nav-label.peeking {
+  opacity: 1;
+  animation: labelPeek 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes labelPeek {
+  0% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-1.2rem);
+    color: var(--gold);
+  }
+  70% {
+    opacity: 1;
+    color: var(--gold);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-1.2rem);
+  }
+}
+
+/* Dark mode for label page */
+.sec-nav.dark .sec-nav-dot {
+  background: rgba(200, 169, 110, 0.3);
+  border-color: rgba(200, 169, 110, 0.5);
+}
+
+.sec-nav.dark .sec-nav-dot:hover {
+  background: rgba(200, 169, 110, 0.6);
+  border-color: var(--gold-b);
+  box-shadow: 0 0 8px rgba(200, 169, 110, 0.4);
+}
+
+.sec-nav.dark .sec-nav-dot.active {
+  background: var(--gold-b);
+  border-color: var(--gold-b);
+  box-shadow: 0 0 12px rgba(200, 169, 110, 0.5);
+  animation: activeDotPulseDark 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes activeDotPulseDark {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(200, 169, 110, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(200, 169, 110, 0.8);
+  }
+}
+
+.sec-nav.dark .sec-nav-label {
+  color: rgba(200, 169, 110, 0.5);
+}
+
+.sec-nav.dark .sec-nav-dot-wrapper:hover .sec-nav-label,
+.sec-nav.dark .sec-nav-label.active,
+.sec-nav.dark .sec-nav-label.peeking {
+  color: var(--gold-b);
+}
+
+/* Responsive design */
+@media (max-width: 1440px) {
+  .sec-nav {
+    right: 1.5rem;
+  }
+
+  .sec-nav-dots {
+    gap: 1.2rem;
+  }
+
+  .sec-nav-label {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sec-nav {
+    right: 1rem;
+  }
+
+  .sec-nav-dots {
+    gap: 1rem;
+  }
+
+  .sec-nav-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .sec-nav-dot:hover {
+    transform: scale(1.5);
+  }
+
+  .sec-nav-dot.active {
+    width: 8px;
+    height: 8px;
+    transform: scale(1.5);
+  }
+
+  .sec-nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sec-nav {
+    display: none;
+  }
+}

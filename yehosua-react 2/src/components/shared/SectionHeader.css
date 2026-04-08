@@ -1,0 +1,157 @@
+/* Section Header */
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+}
+
+/* Light variant (default) */
+.section-header-light {
+  color: var(--ink);
+}
+
+/* Dark variant */
+.section-header-dark {
+  color: var(--bg0);
+}
+
+/* Left number - large, faded, decorative */
+.sh-number-left {
+  font-family: var(--f-serif);
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: bold;
+  letter-spacing: 2px;
+  opacity: 0.07;
+  line-height: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.section-header-dark .sh-number-left {
+  opacity: 0.07;
+}
+
+/* Center section - left-aligned content */
+.sh-center {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+/* Label with gold underline */
+.sh-label {
+  font-family: var(--f-head);
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.sh-label::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+
+.section-header-dark .sh-label {
+  color: var(--gold-b);
+}
+
+.section-header-dark .sh-label::after {
+  background: var(--gold-b);
+}
+
+/* Title */
+.sh-title {
+  font-family: var(--f-serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+  max-width: 90vw;
+  word-spacing: 0.2em;
+}
+
+.sh-title em {
+  font-style: italic;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* Responsive: tablet */
+@media (max-width: 1024px) {
+  .section-header {
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .sh-number-left {
+    font-size: clamp(3.5rem, 7vw, 6rem);
+  }
+}
+
+/* Responsive: mobile - hide number and center everything */
+@media (max-width: 768px) {
+  .section-header {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .sh-number-left {
+    display: none;
+  }
+
+  .sh-center {
+    text-align: center;
+    align-items: center;
+  }
+
+  .sh-label {
+    font-size: 0.7rem;
+  }
+
+  .sh-label::after {
+    display: none;
+  }
+
+  .sh-title {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .section-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .sh-label {
+    font-size: 0.65rem;
+  }
+
+  .sh-title {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    max-width: 95vw;
+  }
+}

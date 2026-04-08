@@ -1,0 +1,40 @@
+/* Progress Bar - Scroll tracking */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #a06820 0%,
+    #c07e28 50%,
+    #a06820 100%
+  );
+  z-index: 99;
+  transition: box-shadow 0.2s ease;
+  box-shadow: 0 0 8px rgba(192, 126, 40, 0.3);
+  will-change: width;
+  border-radius: 0 2px 2px 0;
+}
+
+.progress-bar:hover {
+  height: 4px;
+  box-shadow: 0 0 12px rgba(192, 126, 40, 0.5);
+}
+
+/* Dark mode variant */
+@media (prefers-color-scheme: dark) {
+  .progress-bar {
+    background: linear-gradient(
+      90deg,
+      #d4a574 0%,
+      #e8c9a1 50%,
+      #d4a574 100%
+    );
+    box-shadow: 0 0 8px rgba(212, 165, 116, 0.3);
+  }
+
+  .progress-bar:hover {
+    box-shadow: 0 0 12px rgba(212, 165, 116, 0.5);
+  }
+}
