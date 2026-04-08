@@ -67,12 +67,12 @@ export const EPK_SECTIONS = {
     label: 'Sonic Moments',
     title: 'GALLERY',
     images: [
-      { id: 1, title: 'Alpine Ascent', description: 'Starting the journey' },
-      { id: 2, title: 'Desert Sands', description: 'Tarifa crossing' },
-      { id: 3, title: 'Northern Lights', description: 'Copenhagen arrival' },
-      { id: 4, title: 'Stage Presence', description: 'Kingdom Festival' },
-      { id: 5, title: 'Roman Echoes', description: 'Eternal City' },
-      { id: 6, title: 'Return Home', description: 'Circle complete' }
+      { id: 1, src: '/images/image-1.webp', title: 'Alpine Ascent', description: 'Starting the journey' },
+      { id: 2, src: '/images/image-4.webp', title: 'Desert Sands', description: 'Tarifa crossing' },
+      { id: 3, src: '/images/image-7.webp', title: 'Northern Lights', description: 'Copenhagen arrival' },
+      { id: 4, src: '/images/image-8.webp', title: 'Stage Presence', description: 'Kingdom Festival' },
+      { id: 5, src: '/images/image-9.webp', title: 'Roman Echoes', description: 'Eternal City' },
+      { id: 6, src: '/images/image-10.webp', title: 'Return Home', description: 'Circle complete' }
     ]
   },
 
@@ -128,13 +128,37 @@ export const EPK_SECTIONS = {
     ]
   },
 
-  // Section 08: Featured Set
+  // Section 08: The Set (Featured Performances)
   featuredSet: {
     number: '08',
-    label: 'Featured Performance',
-    title: 'KINGDOM FESTIVAL SET',
-    date: 'August 2025',
-    soundcloudUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2292147281&color=%23f2e6e0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false'
+    label: 'Featured Performances',
+    title: 'THE SET',
+    sets: [
+      {
+        label: 'KINGDOM FESTIVAL',
+        date: 'August 2025',
+        description: 'Peak set · Main stage closing',
+        soundcloudUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2292147281&color=%23f2e6e0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false'
+      },
+      {
+        label: 'WAREHOUSE BERLIN',
+        date: 'June 2025',
+        description: 'Underground techno · 6-hour marathon',
+        soundcloudUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2292147281&color=%23f2e6e0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false'
+      },
+      {
+        label: 'SUNRISE TARIFA',
+        date: 'March 2025',
+        description: 'Beach ceremony · Dawn session',
+        soundcloudUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2292147281&color=%23f2e6e0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false'
+      },
+      {
+        label: 'ALPINE AWAKENING',
+        date: 'January 2025',
+        description: 'Journey departure · First set',
+        soundcloudUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2292147281&color=%23f2e6e0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&show_playcount=false&liking=false&sharing=false&buying=false&download=false'
+      }
+    ]
   },
 
   // Section 09: Mixes
@@ -339,9 +363,47 @@ export const EPK_SECTIONS = {
     ]
   },
 
-  // Section 14: Contact
-  contact: {
+  // Section 14: Availability Codex
+  availability: {
     number: '14',
+    label: 'Booking Windows',
+    title: 'AVAILABILITY CODEX',
+    description: 'Seasonal availability for bookings and appearances. Subject to journey schedule.',
+    seasons: [
+      {
+        name: 'Spring',
+        months: 'March — May',
+        status: 'Open',
+        note: 'Festival season begins. Priority given to outdoor events and multi-day festivals.',
+        icon: '◈'
+      },
+      {
+        name: 'Summer',
+        months: 'June — August',
+        status: 'Limited',
+        note: 'Peak touring season. Limited availability due to festival circuit commitments.',
+        icon: '◈'
+      },
+      {
+        name: 'Autumn',
+        months: 'September — November',
+        status: 'Open',
+        note: 'Club season. Available for intimate venues, warehouse events, and special projects.',
+        icon: '◈'
+      },
+      {
+        name: 'Winter',
+        months: 'December — February',
+        status: 'Selective',
+        note: 'Studio and journey season. Select appearances and residencies only.',
+        icon: '◈'
+      }
+    ]
+  },
+
+  // Section 15: Contact
+  contact: {
+    number: '15',
     label: 'Get In Touch',
     title: 'BOOKING & CONTACT',
     contacts: [
@@ -352,10 +414,10 @@ export const EPK_SECTIONS = {
         note: 'Festival slots · Club nights · Agency partnerships · Tours'
       },
       {
-        label: 'Direct Contact',
-        name: 'Yehosua Himself',
+        label: 'Press & Media',
+        name: 'Lia Bergmann',
         email: 'yehosuahimself@gmail.com',
-        note: 'Press, collaborations & inquiries'
+        note: 'Press inquiries · Interviews · Media features · Collaborations'
       }
     ],
     message: 'For partnerships, press inquiries, or special project requests, please contact us directly.'
