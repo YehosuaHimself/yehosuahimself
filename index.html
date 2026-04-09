@@ -275,6 +275,15 @@ p{line-height:1.75 !important}
   -webkit-backface-visibility:hidden;backface-visibility:hidden;
   image-rendering:auto;
 }
+
+/* ─── Section Background Images ─── */
+.sec-bg-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background-size:cover;background-position:center;opacity:0;animation:heroFadeIn .8s ease .1s forwards;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.sec-bg-overlay{position:absolute;inset:0;z-index:1}
+.sec-bg-overlay--light{background:linear-gradient(180deg,rgba(245,240,232,.88) 0%,rgba(245,240,232,.78) 100%)}
+.sec-bg-overlay--dark{background:linear-gradient(180deg,rgba(13,10,6,.82) 0%,rgba(13,10,6,.72) 100%)}
+.sec-bg-overlay--accent{background:linear-gradient(180deg,rgba(192,126,40,.12) 0%,rgba(13,10,6,.78) 100%)}
+
+section>.sec-bg-wrap~*:not(.sec-bg-overlay):not(.sec-bg-wrap){position:relative;z-index:2}
 @keyframes heroFadeIn{from{opacity:0}to{opacity:1}}
 .hero-bg[style*="background-image"],.hm-hero-bg[style*="background-image"],.land-bg[style*="background-image"]{
   opacity:0;animation:heroFadeIn .6s ease .05s forwards;
@@ -4773,8 +4782,10 @@ body[data-page="label"] #g-topnav .g-tn-logo {
 <hr class="div">
 
 <!-- ═══ VISION ════════════════════════════════════ -->
-<section class="manifesto reveal" id="vision">
-  <div class="section-label">Welcome to Eternity</div>
+<section class="manifesto reveal" id="vision" style="position:relative;overflow:hidden">
+  <div class="sec-bg-wrap" style="background-image:url('images/bg-vision.webp')"></div>
+  <div class="sec-bg-overlay sec-bg-overlay--light"></div>
+  <div class="section-label" style="position:relative;z-index:2">Welcome to Eternity</div>
   <div class="section-title" style="font-size:clamp(2rem,4vw,3.5rem);margin-bottom:2rem;">ABOUT THE LABEL</div>
   <div class="manifesto-body">
     <div class="manifesto-number">01</div>
@@ -5039,7 +5050,9 @@ body[data-page="label"] #g-topnav .g-tn-logo {
 </div>
 
 <!-- ═══ KINGDOM FESTIVAL ══════════════════════════════ -->
-<section class="festival reveal" id="kingdom">
+<section class="festival reveal" id="kingdom" style="position:relative;overflow:hidden">
+  <div class="sec-bg-wrap" style="background-image:url('images/bg-kingdom.webp')"></div>
+  <div class="sec-bg-overlay sec-bg-overlay--accent"></div>
   <!-- REPLACE: swap the gradient below with your cinematic Burning-Man-style image URL -->
   <div class="fest-bg" id="festBg" style="background:radial-gradient(ellipse at 50% 40%, #e8820a 0%, #c45a00 20%, #7a2e00 40%, #3d1400 60%, #1a0a00 80%, #000 100%);"></div>
   <div class="fest-tint"></div>
@@ -5565,7 +5578,9 @@ body[data-page="label"] #g-topnav .g-tn-logo {
 <hr class="div">
 
 <!-- ════ SOUND ════ -->
-<section id="sound" class="s" style="padding-bottom:0;">
+<section id="sound" class="s" style="position:relative;overflow:hidden;padding-bottom:0;">
+  <div class="sec-bg-wrap" style="background-image:url('images/bg-sound.webp')"></div>
+  <div class="sec-bg-overlay sec-bg-overlay--dark"></div>
   <span class="sidx">01</span>
   <div class="sound-head">
     <div>
@@ -5594,7 +5609,9 @@ body[data-page="label"] #g-topnav .g-tn-logo {
 <hr class="div">
 
 <!-- ════ MIXES ════ -->
-<section id="mixes" class="s">
+<section id="mixes" class="s" style="position:relative;overflow:hidden">
+  <div class="sec-bg-wrap" style="background-image:url('images/bg-mixes.webp')"></div>
+  <div class="sec-bg-overlay sec-bg-overlay--dark"></div>
   <span class="sidx">02</span>
   <div class="lbl rv">Selected Tracks</div>
   <h2 class="stitle rv d1">THE <em>SET</em></h2>
@@ -5643,7 +5660,9 @@ body[data-page="label"] #g-topnav .g-tn-logo {
 <hr class="div">
 
 <!-- ════ LIVE ════ -->
-<section id="live" class="s">
+<section id="live" class="s" style="position:relative;overflow:hidden">
+  <div class="sec-bg-wrap" style="background-image:url('images/bg-live.webp')"></div>
+  <div class="sec-bg-overlay sec-bg-overlay--dark"></div>
   <span class="sidx">03</span>
   <div class="lbl rv">Tech Rider</div>
   <h2 class="stitle rv d1">THE <br><em>STAGE</em></h2>
