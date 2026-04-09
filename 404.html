@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YEHOSUA HIMSELF</title>
+<script>
+// SPA routing: redirect known paths back to index with route param
+(function(){
+  var path = location.pathname.replace(/^\//,'').replace(/\/$/,'').toLowerCase();
+  var known = ['home','label','epk'];
+  if(known.indexOf(path) !== -1){
+    location.replace('/?route=' + path);
+  } else {
+    // Unknown path: redirect to root after 3s
+    setTimeout(function(){ location.replace('/'); }, 3000);
+  }
+})();
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:"DM Mono",monospace;color:#1c1007;text-align:center}
+.wrap{padding:2rem}
+h1{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:300;letter-spacing:.15em;color:#a06820;margin-bottom:1.5rem}
+p{font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;opacity:.45;margin-bottom:2rem}
+a{color:#a06820;text-decoration:none;font-size:.78rem;letter-spacing:.25em;text-transform:uppercase;border-bottom:1px solid rgba(160,104,32,.3);padding-bottom:2px}
+a:hover{border-color:#a06820}
+.redirect{font-size:.68rem;opacity:.3;margin-top:2rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>YEHOSUA</h1>
+<p>You've wandered off the path.</p>
+<a href="/">Return to YEHOSUA.LOVE</a>
+<div class="redirect">Redirecting&hellip;</div>
+</div>
+</body>
+</html>
