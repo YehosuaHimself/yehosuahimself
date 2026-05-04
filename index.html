@@ -4048,7 +4048,26 @@ body[data-page="label"] #g-topnav .g-tn-logo {
 <meta name="theme-color" content="#0d0a06">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<script>/* CURSOR NUKE JS */(function(){var s='cursor:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==") 0 0,none!important';function k(){document.documentElement.style.cssText+=';'+s;if(document.body)document.body.style.cssText+=';'+s;}k();document.addEventListener('DOMContentLoaded',k);if(typeof MutationObserver!=='undefined')new MutationObserver(k).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});})();</script>
+<script>/* CURSOR NUKE JS — safe v2 (setProperty, no cssText-loop bug) */
+(function(){
+  var _C="url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==') 0 0,none";
+  function kill(el){if(el&&el.style)el.style.setProperty('cursor',_C,'important');}
+  function killAll(){kill(document.documentElement);kill(document.body);}
+  killAll();
+  document.addEventListener('DOMContentLoaded',killAll);
+  document.addEventListener('mouseover',function(e){kill(e.target);},{capture:true,passive:true});
+  document.addEventListener('focusin',function(e){kill(e.target);},{passive:true});
+  if(window.MutationObserver){
+    new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        var el=m.target;
+        /* Only re-apply if cursor was changed to something other than none —
+           prevents the observer from triggering itself when setProperty is idempotent. */
+        if(el&&el.style&&el.style.cursor&&el.style.cursor!=='none'){kill(el);}
+      });
+    }).observe(document.documentElement,{attributes:true,attributeFilter:['style'],subtree:true});
+  }
+})();</script>
 </head>
 <body>
 
